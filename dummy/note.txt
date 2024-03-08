@@ -1,0 +1,30 @@
+{
+        errortype ?       
+          errortype === "loginerror" ? <LoginError/> : <Unauthorization/>
+        :
+        <>
+              <div className="role-controller">
+                  <button
+                    onClick={() => setRole("create")}
+                    className={role === "create" ? "tabbtn active" : "tabbtn"}>
+                    Create
+                  </button>
+                  <span> </span>
+                  <button
+                    onClick={() => setRole("assign")}
+                    className={role === "assign" ? "tabbtn active" : "tabbtn"}>
+                    Assign
+                  </button>
+                  <span> </span>
+                  <button
+                    onClick={() => setRole("manage")}
+                    className={role === "manage" ? "tabbtn active" : "tabbtn"}>
+                    Manage
+                  </button>
+              </div>
+      
+              {role === "create" && <Createrole role="Create"/>}
+              {role === "assign" && <AssignroleList />}
+              {role === "manage" && <Createrole role="Update" />  }
+        </>
+      }

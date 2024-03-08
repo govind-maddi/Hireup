@@ -1,0 +1,228 @@
+.user-dashboard {
+  margin-top: 2rem;
+}
+
+.upload-btn{
+  width: 45px;
+  height: 45px;
+  margin-right: 7rem;
+  /* padding: 20px; */
+  border-radius: 50%;
+}
+.my-applications {
+  width: 95%;
+  margin: 0px auto;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.select-sort {
+  flex-flow: row wrap;
+}
+
+.statistics,
+.my-resumes {
+  margin-top: 1rem;
+  padding: 1rem 1rem;
+  width: 95%;
+  margin: 0px auto;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.admin-statistics {
+  padding: 2rem;
+  width: 95%;
+  margin:1.5rem auto;
+  background-color: #fff;
+  /* display: flex; */
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.resume {
+  border-radius: 5px;
+  text-align: center;
+  margin-right: 40px;
+}
+.resume_inner{
+  transition: all 0.5s ease-out;
+  transform: scale(0);
+}
+.resume > div > svg{
+  width: 25px;
+  height: 25px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.section_header{
+  font-size: 22px;
+  font-weight: 500;
+  color: #023436;
+  margin-bottom: 15px;
+}
+.section_header_ul{
+  text-decoration: underline;
+  text-underline-offset: 10px;
+  text-decoration-color: #00BFB3;
+}
+
+.all-resumes {
+    position: relative;
+    padding: 1rem 1rem;
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    overflow: scroll;
+    height: 285px;
+}
+
+.application-status {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0px auto;
+  padding: 1.2rem;
+  background-color: #fff;
+  gap: 15px;
+}
+.job-status > label{
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px
+}
+.job-actions{
+  display: flex;
+  column-gap: 25px;
+  justify-content: center;
+  align-items: center;
+}
+.job-actions > svg{
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.comment_box{
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background-color: white;
+  padding: 25px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  z-index: 15;
+}
+.comment_box > header{
+  font-weight: 500;
+  font-size: 20px;
+}
+.comment_box > svg{
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+.comment_box > section{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-evenly;
+  row-gap: 10px;
+  background-color: #EBFFEF;
+  padding: 10px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.comment_box > section > label{
+  font-weight: 500;
+}
+.comment_box > section > textarea{
+  width: 500px;
+  border: 1.5px #023436 solid;
+  outline: none;
+  resize: none;
+  background-color: transparent;
+  min-height: 80px;
+}
+
+/* Status of applied job */
+.job-status-application {
+  width: 100%;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  background-color: #EBFFEF;
+  align-items: center;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.job-status-application .job-status {
+  border-radius: 30px;
+  background-color: rgb(241, 128, 15);
+  padding: 5px 10px;
+}
+
+.job-status-application-header {
+  background-color: #fff;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+/* Select tag design */
+.select {
+  padding: 1rem;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
+/* resume open design */
+.resume-viewer-div {
+  position: fixed;
+  top: 4rem;
+  width: 100%;
+  height: 170vh;
+  z-index: 100;
+  background: #76646438;
+}
+
+.resume-viewer {
+  top: 2rem;
+  width: 60%;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: rgba(255, 0, 0, 0.313);
+  height: 150vh;
+  border-radius: 1rem;
+}
+
+.close-icon {
+  width: 40px !important;
+  height: 40px !important;
+  position: absolute;
+  top: 3rem;
+  right: 13rem;
+  cursor: pointer;
+  transition: 1s;
+}
+
+.close-icon:active {
+  transform: scale(0.8);
+}
+
+.MuiSkeleton-root {
+  width: 100px !important;
+  height: 150px !important;
+  border-radius: 5px !important;
+}

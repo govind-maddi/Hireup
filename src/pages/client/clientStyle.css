@@ -1,0 +1,197 @@
+.profile-page {
+  margin-top: 3rem;
+  padding: 3rem;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  margin: 3rem;
+  border-radius: 5px;
+}
+.profile-page .top {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 4rem;
+}
+.profile-page .top .left {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: antiquewhite;
+}
+.profile-page .top .right {
+  display: flex;
+  align-items: center;
+}
+
+.profile-page .user-details .bottom {
+  padding: 1rem 0rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  flex-flow: row wrap;
+}
+
+.delete-account {
+  padding: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  margin: 3rem;
+}
+
+/*  Profile responsive design  */
+@media screen and (min-width: 320px) and (max-width: 425px) {
+  .profile-page {
+    margin: 1rem 10px;
+    padding: 1rem;
+  }
+  .profile-page .top {
+    gap: 1rem;
+  }
+  .profile-page .top .left {
+    height: 120px;
+  }
+  .greeting h1 {
+    font-size: 18px;
+  }
+  .delete-account {
+    padding: 1rem;
+    margin: 1rem;
+  }
+}
+
+/* Client roles styling */
+.client-roles {
+  padding: 2rem;
+  width: 85%;
+  margin: 3rem auto;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  overflow: auto;
+  min-height: 500px;
+  position: relative;
+}
+.application{
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  padding: 15px 20px;
+  display: grid;
+  grid-template-columns: 200px 45px 200px 40px 200px;
+  column-gap: 20px;
+  min-width: fit-content;
+  width: auto;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #EBFFEF;
+  margin: 0 15px 30px 15px;
+}
+.application > div{
+  text-align: center;
+}
+.permissionactionbtn{
+  background-color: #fff;
+  border: 2px #023436 solid;
+  width: fit-content;
+  padding: 10px;
+  font-weight: 500;
+  transition: all 0.3s;
+  font-size:16px;
+}
+.permissionactionbtn:hover{
+  background-color: #023436;
+  color: #00BFB3;
+}
+.application-footer {
+  padding: 10px 3rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0px -3px 5px 0px #00000017;
+  background-color: #fff;
+}
+.application-footer .left {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+.application-footer .btns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5rem;
+}
+
+/* Application responsive styling */
+@media screen and (min-width: 320px) and (max-width: 425px) {
+  .application-footer {
+    top: 0;
+    gap: 1rem;
+    padding: 0px 1rem !important;
+    height: 80px !important;
+  }
+  .application-footer .left h2 {
+    font-size: 16px;
+  }
+  .btn {
+    font-size: 12px;
+    padding: 6px;
+  }
+  .client-roles {
+    margin: 0rem auto 10px auto !important;
+  }
+  .application-footer .btns {
+    gap: 10px !important;
+  }
+  .application-footer .left {
+    flex-direction: column;
+  }
+  .comment-box {
+    width: 350px !important;
+  }
+}
+
+/* Comment box styling */
+.comment-box {
+  position: absolute;
+  background-color: #fff;
+  width: 50%;
+  box-sizing: border-box;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.radio_selection{
+  display: flex;
+  gap: 20px;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+.radiobtn{
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+.radiobtn > label{
+  margin-right: 30px;
+  margin-left: 10px;
+}
+#reject {
+  width: 20px;
+  height: 20px;
+}
+#comment{
+  width: 90%;
+  box-sizing: border-box;
+  resize: none;
+  outline: none;
+ 
+}

@@ -1,0 +1,79 @@
+#usersignup_form, #corporatesignup_form{
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    width: 30%;
+    min-width: 400px;
+    margin: 35px auto 0 auto;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+    background-color: #fff;
+}
+#usersignup_form > header, #corporatesignup_form > header{
+    font-size: 20px;
+    font-weight: 500;
+    padding: 5px;
+    margin: 25px 0;
+}
+#usersignup_form > input, #corporatesignup_form > input{
+    margin-bottom: 25px;
+    box-sizing: border-box;
+    width: 85%;
+    padding: 10px;
+    font-size: 16px;
+}
+#submitbtn{
+    width: fit-content;
+    padding: 8px 25px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    font-size: 16px;
+    background-color: #023436;
+    color: #00bfb3;
+    border: none;
+}
+#corporate_redirect{
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    font-size: 14px;
+    background-color: #023436;
+    color: #00bfb3;
+    font-weight: 500;
+    cursor: pointer;
+}
+.coprorateuser_selector{
+    display: flex;
+    padding: 10px;
+    width: 100%;
+    justify-content: space-evenly;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+.coprorateuser_selector > section{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 10px;
+}
+.coprorateuser_selector > section > input{
+    width: 20px;
+    height: 20px;
+}
+@media screen and ( max-width : 500px ){
+
+    #usersignup_form, #corporatesignup_form{
+        min-width: 90%;
+        font-size: 14px;
+    }
+    #usersignup_form > header, #corporatesignup_form > header{
+        font-size: 16px;
+    }
+    #usersignup_form > input, #corporatesignup_form > input{
+        font-size: 14px;
+    }
+
+}

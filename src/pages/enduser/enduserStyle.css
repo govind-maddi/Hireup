@@ -1,0 +1,143 @@
+/* Styling for job card */
+.job-card {
+  width: 380px;
+  background-color: #fff;
+  padding: 2rem 1rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    cursor: pointer;
+    transition: all 0.4s;
+}
+.job-card:active{
+  transform: scale(0.95);
+}
+.job-card .top,.job-card-expanded .top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.job-card .top .left,.job-card-expanded .top .left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.job-card .top .left .img , .job-card-expanded .top .left .img{
+  background-color: #d9d9d9;
+  width: 50px;
+  height: 50px;
+}
+.job-card .bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* styling for all jobs section */
+.all-jobs {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-around;
+  flex-flow: row wrap;
+  gap: 10px;
+  row-gap: 20px;
+}
+
+/* Seacrch bar styling */
+
+.searchbar{
+  margin-left: 35px;
+  padding: 1rem;
+  display: flex;
+  width: 96%;
+}
+.searchbar .input{
+  border-radius: 10px;
+  width: 86%;
+}
+
+.btn{
+  background-color: #023436;
+  color:  #00BFB3;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  z-index: 10;
+}
+.btn:active{
+  transform:scale(0.95);
+}
+
+/* dropdown styling */
+.sorting{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Expanded job card styling */
+.job-card-expanded{
+  padding: 2rem;
+  border-radius: 10px;
+  height: 80vh;
+  margin: 3rem auto;
+  width: 85%;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+.job-card-expanded .bottom{
+  display: flex;
+  gap: 2rem;
+  margin: 2rem 0rem;
+}
+.resumeimg{
+  width: 150px;
+  height: 200px;
+  object-fit: contain;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  transition: all 0.5s ease;
+  cursor: pointer;
+}
+/* Job card responsive styling */
+@media screen and (min-width: 320px) and (max-width: 425px) {
+  .job-card .bottom{
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  .sorting{
+    justify-content: flex-start;
+    flex-flow: row wrap;
+    padding: 0rem 2rem;
+  }
+  .searchbar{
+    margin: 0px;
+  }
+  .job-card .left .desc,.left .desc h3{
+    font-size: 13px;
+  }
+  .job-card .bottom{
+    font-size: 13px;
+  }
+  .job-card-expanded {
+    width: 90%;
+    padding: 1rem;
+    height: fit-content;
+  }
+  .job-card-expanded .bottom{
+    margin: 10px 0px;
+  }
+  .job-desc h3{
+    font-size: 16px;
+  }
+  .job-desc p{
+    font-size: 13px;
+  }
+}

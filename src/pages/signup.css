@@ -1,0 +1,18 @@
+.signup{
+  width: 300px;
+  padding: 2rem 10px;
+  border-radius: 5px;
+  margin: 5rem auto;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.signup span{
+  color: #00BFB3;
+}
+.signup-btn{
+  width: 80%;
+}

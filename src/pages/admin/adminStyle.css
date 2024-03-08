@@ -1,0 +1,180 @@
+.assignlist_item,.pendinglist_item{
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  padding: 15px 20px;
+  display: grid;
+  column-gap: 20px;
+  min-width: fit-content;
+  width: auto;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #EBFFEF;
+  margin: 0 15px 30px 15px;
+}
+.assignlist_item{
+  grid-template-columns: 45px 200px 200px 200px 200px;
+}
+.pendinglist_item{
+  grid-template-columns: 45px 200px 200px 200px;
+}
+.assignlist_item > div,.pendinglist_item > div{
+  text-align: center;
+}
+
+.assignlist_item > .img , .pendinglist_item > .img{
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #023436;
+}
+.assignlist_item > .img > img , .pendinglist_item > .img > img{
+  width: 100%;
+  height: 100%;
+}
+.recruit-approve, .recruit-jobrole {
+  display: flex;
+  gap: 1rem;
+}
+
+.tabbtn{
+  background-color: #fff;
+  border: 2px #023436 solid;
+  border-bottom: none;
+  color: #023436;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 10;
+  width: 150px;
+  border-radius: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  
+}
+.requestbtn{
+  background-color: #fff;
+  border: 2px #023436 solid;
+  width: fit-content;
+  padding: 10px;
+  font-weight: 500;
+  transition: all 0.3s;
+  font-size:16px;
+}
+.requestbtn:hover{
+  background-color: #023436;
+  color: #00BFB3;
+}
+/* #00BFB3
+  #023436
+*/
+.active {
+  background-color: #023436;
+  color: #00BFB3;
+}
+.heading{
+  margin-bottom: 20px;
+}
+.desc{
+  margin: 20px 0;
+}
+.jobdescription{
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100px;
+  border: 1px rgb(189, 185, 185) solid;
+}
+#job-role-update{
+  width: 200px;
+  outline: none;
+  padding: 8px 10px;
+  border: 1px rgb(189, 185, 185) solid;
+}
+
+/* Admin application responsive styling */
+@media screen and (min-width: 320px) and (max-width: 425px) {
+  .admin-page {
+    width: 90%;
+    margin: 0px auto;
+  }
+  .assignlist_item,.pendinglist_item {
+    padding: 3px 5px !important;
+  }
+  .assignlist_item > .img ,.pendinglist_item > .img{
+    width: 30px;
+    height: 30px;
+  }
+  .assignlist_item > .name h3,
+  .assignlist_item > .percentage h4 ,.pendinglist_item > .name h3, .pendinglist_item > .percentage h4{
+    font-size: 12px;
+    margin-left: 10px;
+  }
+}
+
+
+/* admin roles styling */
+.admin-roles{
+  width : 85%;
+  margin: 0px auto;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  margin-top: 0px;
+  margin-bottom: 4rem;
+}
+.post-section{
+  background-color: #fff;
+  padding: 2rem 3rem;
+}
+
+/* Recruit role */
+.recruit-role{
+  padding: 3rem;
+  width: 85%;
+  margin: 3rem auto;
+  background-color: #fff;
+}
+.recruit-role .btns{
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+}
+
+.role-controller, .request_controller{
+  width : 84%;
+  margin: 0px auto;
+  margin-top: 3rem;
+  position: relative;
+  z-index: 2;
+
+}
+.dropdown{
+  padding: 12px 5px;
+  width: 100%;
+  border: none;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  outline: none;
+}
+.assign-list, .roles-admin{
+  padding: 2rem;
+  width: 85%;
+  margin: 0 auto;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  overflow: auto;
+  min-height: 500px;
+  position: relative;
+  margin-bottom: 30px;
+  box-sizing: border-box;
+}
+.create-btn{
+  float: right;
+}
+
+
+@media screen and ( max-width:768px ) {
+    .tabbtn{
+      width: 100px;
+    }
+    
+}
