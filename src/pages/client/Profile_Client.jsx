@@ -3,18 +3,58 @@
 import { TextField } from "@mui/material";
 import "./clientStyle.css";
 import Header from "../../ParentContComponents/Header";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { collection, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import { db, storage } from "../../firebase/config";
+import { NotificationContextManager } from "../../context/NotificationContext";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
 
 function Profile_Client() {
-  const [message, setMessage] = useState();
 
+  const [ details,setDetails ] = useState({
+    "username":"",
+    "emailid":"",
+    "password":"",
+    "jobrole":"",
+    "img":"",
+  });
 
-  const fetchUserDetails = async () => {
-    const resp = await fetch(" ");
-    const data = await resp.json();
-  };
+  const [ loader,setLoader ] = useState(false);
+  const notification = useContext(NotificationContextManager);
+
+  const handleDetails = (key,value) => {
+    setDetails((prevDetails) => {
+      return {
+        ...prevDetails,
+        [key]:value,
+      }
+    });
+  }
+
 
   useEffect(() => {
+
+    const fetchUserDetails = async() => {
+
+      const { auth } = JSON.parse(localStorage.getItem("hireup"));
+
+      const coll =  collection(db,"Hireup_Db","Organizations",`${auth.orgid}`,"Recruiters","Recruiter_Db");
+      const docref = doc(coll,`${auth.id}`);
+      
+       onSnapshot(docref,(docu) => {
+        const data = docu.data();
+        //console.log(data);
+        setDetails({
+          username:data.name,
+          emailid:data.emailid,
+          password:data.password,
+          jobrole:data.jobpost,
+          img:data.img,
+        })
+      })
+    }
+
     fetchUserDetails();
   }, []);
 
@@ -24,27 +64,57 @@ function Profile_Client() {
     const file = event.target.files[0];
     formData.append("file", file);
 
-    try {
-      const response = await fetch("", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-      setMessage(data.message);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    const {auth} = JSON.parse(localStorage.getItem("hireup"));
+
+    const id = "profilepic"
+    const fileref = ref(storage, `Users/${auth.id}/resumes/${id}`);
+    
+    uploadBytes(fileref, file).then((snapshot) => {
+      getDownloadURL(fileref).then(async (url) => {
+        const coll =  collection(db,"Hireup_Db","Organizations",`${auth.orgid}`,"Recruiters","Recruiter_Db");
+        const docref = doc(coll,`${auth.id}`);
+
+        await updateDoc(docref,{
+          "img":url,
+        });
+
+        notification("Updated Profile Pic","success");
+
+      },() => notification("Failed To Upload Image","error"));
+    },() => notification("Failed To Upload Image","error"));
+    
   };
 
   const updateDetails = async () => {
-    const resp = await fetch(" ", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(""),
-    });
-    const data = await resp.json();
+    setLoader(true);
+    try
+    {
+      const {auth} = JSON.parse(localStorage.getItem("hireup"));
+        const coll =  collection(db,"Hireup_Db","Organizations",`${auth.orgid}`,"Recruiters","Recruiter_Db");
+        const docref = doc(coll,`${auth.id}`);
+        const docu = await getDoc(docref);
+
+        if(docu.exists)
+        {
+          await updateDoc(docref,{
+            "name":details.username,
+            "jobpost":details.jobrole,
+          });
+          notification("Successfully Updated Details","success");
+        }
+        else
+        notification("Updating Details Failed Try Again","error");
+        
+    }
+    catch(err)
+    {
+        console.log(err);
+        notification("Updating Details Failed Try Again","error");
+    }
+    finally{
+      setLoader(false);
+    }
+
   };
 
   return (
@@ -65,11 +135,11 @@ function Profile_Client() {
           <div className="top">
             <div className="image">
               <div className="left">
-                <img src="" alt="" />
+                <img src={ details.img ? details.img : "" } alt="" />
               </div>
-              <form id="uploadForm" encType="multipart/form-data">
+              <form id="uploadForm" encType="multipart/form-data" style={{marginTop:"30px"}}>
                 <label className="btn input-btn" htmlFor="upload-resume">
-                  Select Profile
+                  Upload
                 </label>
                 <span> </span>
                 <input
@@ -78,40 +148,54 @@ function Profile_Client() {
                   id="upload-resume"
                   type="file"
                 />
-                <button className="btn" type="submit">
-                  Upload
-                </button>
               </form>
             </div>
             <div className="right">
               <div className="greeting">
-                <h1>Welcome User..!</h1>
+                <h2>Welcome User..!</h2>
+                <br/>
                 <TextField
                   label="User Name..."
+                  type="text"
+                  value={details.username}
                   id="outlined-basic"
-                  variant="outlined"></TextField>
+                  variant="outlined"
+                  onChange={(e) => handleDetails("username",e.target.value)}
+                  ></TextField>
               </div>
             </div>
           </div>
-          <div className="bottom">
+          <div className="bottom" style={{marginTop:"50px"}}>
             <TextField
-              label="Expected CTC"
+              label="emailid"
+              value={details.emailid}
               id="outlined-basic"
               variant="outlined"
-              type="number"
+              type="email"
+              InputProps={{readOnly:true}}
             />
             <TextField
-              label="Expected Job Role"
+              label="password"
+              value={details.password}
               id="outlined-basic"
               variant="outlined"
+              type="text"
+              InputProps={{readOnly:true}}
             />
             <TextField
-              label="Location"
+              label="Job Role"
+              value={details.jobrole}
               id="outlined-basic"
               variant="outlined"
+              type="text"
+              onChange={(e) => handleDetails("jobrole",e.target.value)}
             />
             <button onClick={() => updateDetails()} className="btn">
-              Update Profile
+            {
+              loader ? 
+              <> <span className="loadersmall" style={{position:'relative',top:'-1px',marginRight:'10px'}}></span> <span>Updating. . .</span> </> :
+              "Update"
+            }
             </button>
           </div>
         </div>

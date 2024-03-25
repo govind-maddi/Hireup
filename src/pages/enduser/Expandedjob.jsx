@@ -44,6 +44,9 @@ const Expandedjob = () => {
             "jobctc":job.CTC,
             "status":"PENDING",
             "resumelink":temp[0].currentversion,
+            "img":docu1.data().img,
+            "name":docu1.data().name,
+            "comments":[],
           })
         
           await updateDoc(docref1,{

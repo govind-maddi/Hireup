@@ -7,6 +7,8 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from "@mui/icons-material/Menu";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/config";
 
 function Header({ typeOfBtn, btn1, btn2,array }) {
  const [anchorEl, setAnchorEl] = useState(null);
@@ -44,7 +46,7 @@ function Header({ typeOfBtn, btn1, btn2,array }) {
     }
     else if (event.target.innerText === "Pending Applications") {
       console.log(event.target.innerText);
-      navigate("/client/:clientid/roles");
+      navigate("/client/roles");
     }
   }
   return (
@@ -58,7 +60,7 @@ function Header({ typeOfBtn, btn1, btn2,array }) {
             <li onClick={(e) => handleNavigate(e)}>{btn1}</li>
             <li onClick={(e) => handleNavigate(e)}>{btn2}</li>
             <li>
-              <button onClick={() => navigate("/signup")} className="signin">
+              <button onClick={() => signOut(auth).then(() => navigate("/login"))} className="signin">
                 {typeOfBtn}
               </button>
             </li>

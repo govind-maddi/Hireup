@@ -83,6 +83,10 @@ function Clients() {
     }
   }
 
+  const exportCsv = () => {
+    const csv = json2csv(applications);
+    console.log(csv);
+  }
 
   useEffect(() => console.log(tobeapprovedlist),[tobeapprovedlist]);
 

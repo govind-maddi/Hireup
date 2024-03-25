@@ -5,28 +5,21 @@ import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import Header from '../../ParentContComponents/Header';
 import { NotificationContextManager } from '../../context/NotificationContext';
+import { collection,doc,getDoc,onSnapshot,updateDoc } from 'firebase/firestore';
+import { db,storage } from '../../firebase/config';
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 function Profile_User() {
 
   const [message, setMessage] = useState();
   
   const [ details,setDetails ] = useState({
-    firstName:'',
-    lastName: '',
+    name: '',
     mobileNo: '',
     email: '',
     password: '',
-    experienceInYears: 0,
-    relavantExp: 0,
-    highestQualification: '',
-    skillSet: '',
-    currentOrg: '',
-    currentJobTitle: '',
     location: '',
-    city: '',
-    zipCode: 0,
-    lastActiveDate: '',
-  });
+    });
   const notification = useContext(NotificationContextManager);
 
   const handleDetails = (key,value) => {
@@ -39,72 +32,83 @@ function Profile_User() {
     })
   }
   
-  const fetchUserDetails = async () => {
-    const resp = await fetch("  ");
-    const data = await resp.json();
-  };
-
+ 
 
   const handleUpload = async (event) => {
-    event.preventDefault();
+      
     const formData = new FormData();
     const file = event.target.files[0];
     formData.append("file", file);
 
-    try {
-      const response = await fetch("http://localhost:8080/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-      setMessage(data.message);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    const {auth} = JSON.parse(localStorage.getItem("hireup"));
+
+    const id = "profilepic"
+    const fileref = ref(storage, `Users/${auth.id}/resumes/${id}`);
+    
+    uploadBytes(fileref, file).then((snapshot) => {
+      getDownloadURL(fileref).then(async (url) => {
+        const coll =  collection(db,"Hireup_Db","EndUsers","User_Db");
+        const docref = doc(coll,`${auth.id}`);
+
+        await updateDoc(docref,{
+          "img":url,
+        });
+
+        notification("Updated Profile Pic","success");
+
+      },() => notification("Failed To Upload Image","error"));
+    },() => notification("Failed To Upload Image","error"));
+    
+    event.target.value = null;
   };
 
 
   const updateDetails = async () => {
-
     try{
-    const resp = await fetch('/user/update_user', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(details)
+      const {auth} = JSON.parse(localStorage.getItem("hireup"));
+
+    const coll1 = collection(db,"Hireup_Db","EndUsers","User_Db");
+    const docref1 = doc(coll1,`${auth.id}`);
+
+    await updateDoc(docref1,{
+      "name":details.name,
+      "phoneno":details.mobileNo,
     })
-    const data = await resp.json();
-    console.log(data);
-    /* notification(data) */
+
+    notification("Updated Profile Details","success");
     }
-    catch(err)
-    {
-      console.log(err.msg);
+    catch(err){
+      console.log(err);
+      notification("Failed to Update Profile Details","success");
     }
   };
 
   const deleteProfile = async () => {
-    try {
-      const id = Number(localStorage.getItem("userid"));
-      const response = await fetch(`http://your-api-url/user/update_user?id=${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any other headers if needed
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-  
-      console.log('User deleted successfully');
-    } catch (error) {
-      console.error('There was a problem with your fetch operation:', error);
-      throw error;
-    }
+    
   }
+
+  useEffect(() => {
+
+    const {auth} = JSON.parse(localStorage.getItem("hireup"));
+
+      const coll1 = collection(db,"Hireup_Db","EndUsers","User_Db");
+      const docref1 = doc(coll1,`${auth.id}`);
+      
+      onSnapshot(docref1,(docu) => {
+        if(docu.exists())
+        {
+          setDetails({
+            email:docu.data().email,
+            name:docu.data().name,
+            mobileNo:docu.data().phoneno,
+            img:docu.data().img,
+            password:docu.data().password,
+            img:docu.data().img,
+          })
+        }
+      })
+
+  }, [])
 
   return (
     <>
@@ -119,11 +123,11 @@ function Profile_User() {
           <div className="top">
             <div className="image">
               <div className="left">
-                <img src="" alt="" />
+                <img src={ details.img ? details.img : "" } alt="" />
               </div>
               <form id="uploadForm" encType="multipart/form-data">
                 <label className="btn input-btn" htmlFor="upload-resume">
-                  Select Profile
+                  Upload
                 </label>
                 <span> </span>
                 <input
@@ -132,31 +136,22 @@ function Profile_User() {
                   id="upload-resume"
                   type="file"
                 />
-                <button className="btn" type="submit">
-                  Upload
-                </button>
               </form>
             </div>
             <div className="right">
               <div className="greeting">
                 <h1>Welcome User..!</h1>
                 <TextField
-                  label="First Name"
+                  label="Name"
                   id="outlined-basic"
-                  variant="outlined" onChange={(e) => handleDetails("firstName",e.target.value)}
-                  value={details.firstName}
+                  variant="outlined" onChange={(e) => handleDetails("name",e.target.value)}
+                  value={details.name}
                   ></TextField>
               </div>
             </div>
           </div>
           <div className="bottom">
-          <TextField
-  label="Last Name"
-  id="outlined-basic"
-  variant="outlined"
-  onChange={(e) => handleDetails("lastName", e.target.value)}
-  value={details.lastName}
-/>
+  
 <TextField
   label="Mobile No"
   id="outlined-basic"
@@ -168,59 +163,15 @@ function Profile_User() {
   label="Email"
   id="outlined-basic"
   variant="outlined"
-  onChange={(e) => handleDetails("email", e.target.value)}
   value={details.email}
+  InputProps={{readOnly:true}}
 />
 <TextField
   label="Password"
   id="outlined-basic"
   variant="outlined"
-  onChange={(e) => handleDetails("password", e.target.value)}
   value={details.password}
-/>
-<TextField
-  label="ExperienceInYears"
-  id="outlined-basic"
-  variant="outlined"
-  onChange={(e) => handleDetails("experienceInYears", e.target.value)}
-  type='number'
-  value={details.experienceInYears}
-/>
-<TextField
-  label="RelevantExp"
-  id="outlined-basic"
-  variant="outlined"
-  onChange={(e) => handleDetails("relavantExp", e.target.value)}
-  type='number'
-  value={details.relavantExp}
-/>
-<TextField
-  label="HighestQualification"
-  id="outlined-basic"
-  variant="outlined"
-  onChange={(e) => handleDetails("highestQualification", e.target.value)}
-  value={details.highestQualification}
-/>
-<TextField
-  label="SkillSet"
-  id="outlined-basic"
-  variant="outlined"
-  onChange={(e) => handleDetails("skillSet", e.target.value)}
-  value={details.skillSet}
-/>
-<TextField
-  label="CurrentOrg"
-  id="outlined-basic"
-  variant="outlined"
-  onChange={(e) => handleDetails("currentOrg", e.target.value)}
-  value={details.currentOrg}
-/>
-<TextField
-  label="CurrentJobTitle"
-  id="outlined-basic"
-  variant="outlined"
-  onChange={(e) => handleDetails("currentJobTitle", e.target.value)}
-  value={details.currentJobTitle}
+  InputProps={{readOnly:true}}
 />
 <TextField
   label="Location"
@@ -228,27 +179,6 @@ function Profile_User() {
   variant="outlined"
   onChange={(e) => handleDetails("location", e.target.value)}
   value={details.location}
-/>
-<TextField
-  label="City"
-  id="outlined-basic"
-  variant="outlined"
-  onChange={(e) => handleDetails("city", e.target.value)}
-  value={details.city}
-/>
-<TextField
-  label="Zipcode"
-  id="outlined-basic"
-  variant="outlined"
-  onChange={(e) => handleDetails("zipCode", e.target.value)}
-  value={details.zipCode}
-/>
-<TextField
-  label="Last Active Date"
-  id="outlined-basic"
-  variant="outlined"
-  onChange={(e) => handleDetails("lastActiveDate", e.target.value)}
-  value={details.lastActiveDate}
 />
 
             

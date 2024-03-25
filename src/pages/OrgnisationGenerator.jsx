@@ -15,11 +15,15 @@ function OrgnisationGenerator() {
     const msg = useRef(null);
     const form = useRef(null);
 
+    const [ loader,setLoader ] = useState(false);
+
     const notification = useContext(NotificationContextManager);
 
     const handleOrganisationGenerator = async(e) => {
 
         e.preventDefault();
+
+        setLoader(true);
 
         const temp = `${org.charAt(0)}${org.charAt(1)}${org.charAt(2)}`;
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -59,10 +63,10 @@ function OrgnisationGenerator() {
         }
         else
         {
-            notification("Admin Already Associated With Organisation","error");
+            notification("Organisation Already Exists","error");
         }
         
-
+        setLoader(false);
     }
 
 /* 4OXjRKfbWVwxmSdVA */
@@ -90,7 +94,15 @@ function OrgnisationGenerator() {
           
           />
 
-          <button type='submit' id='submitbtn'>Get Id</button>
+          <button type='submit' id='submitbtn' className='btnclass'>
+
+          {
+            loader ? 
+            <> <span className="loadersmall" style={{position:'relative',top:'-1px',marginRight:'10px'}}></span> <span>Generating. . .</span> </> :
+            "Get Id"
+          }
+
+          </button>
         </form>
 
         <form ref={form} style={{display:'none'}}>

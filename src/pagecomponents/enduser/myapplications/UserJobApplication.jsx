@@ -7,6 +7,8 @@ import { collection, doc, getDoc, onSnapshot, setDoc, updateDoc } from 'firebase
 function UserJobApplication({ application, deleteUserJobApplication,serialnumber }) {
   const [jobstatus, setJobStatus] = useState("");
   const [commentflag,setCommentFlag] = useState(false);
+  const [ commenttext,setCommentText ] = useState("");
+
   //async call in useEffect to get application job status
 
   const openComment = () => {
@@ -28,6 +30,21 @@ function UserJobApplication({ application, deleteUserJobApplication,serialnumber
     onSnapshot(docref,(docu) => {
       status = docu.data().status;
       setJobStatus(status);
+
+      if(status === "REJECTED")
+      {
+        setCommentFlag(false);
+        let text = "";
+        docu.data().comments.forEach((item) => {
+          text+=item+"\n\n\n";
+        });
+        setCommentText(text); 
+      }
+      else if(status === "")
+      {
+        setJobStatus("PENDING");
+      }
+
     })
 
   }, []);
@@ -46,7 +63,7 @@ function UserJobApplication({ application, deleteUserJobApplication,serialnumber
 
       <div className="job-actions">
 
-      <svg onClick={openComment} xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" fill="#584ebf"><path d="M20,0H4A4,4,0,0,0,0,4V16a4,4,0,0,0,4,4H6.9l4.451,3.763a1,1,0,0,0,1.292,0L17.1,20H20a4,4,0,0,0,4-4V4A4,4,0,0,0,20,0ZM7,5h5a1,1,0,0,1,0,2H7A1,1,0,0,1,7,5ZM17,15H7a1,1,0,0,1,0-2H17a1,1,0,0,1,0,2Zm0-4H7A1,1,0,0,1,7,9H17a1,1,0,0,1,0,2Z"/></svg>
+      <svg onClick={openComment} xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" fill="#584ebf" style={{visibility:jobstatus === "REJECTED" ? "visible" : "hidden" }}><path d="M20,0H4A4,4,0,0,0,0,4V16a4,4,0,0,0,4,4H6.9l4.451,3.763a1,1,0,0,0,1.292,0L17.1,20H20a4,4,0,0,0,4-4V4A4,4,0,0,0,20,0ZM7,5h5a1,1,0,0,1,0,2H7A1,1,0,0,1,7,5ZM17,15H7a1,1,0,0,1,0-2H17a1,1,0,0,1,0,2Zm0-4H7A1,1,0,0,1,7,9H17a1,1,0,0,1,0,2Z"/></svg>
 
       <svg onClick={() => handleDelete(resume.currentversion)} fill='red' viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <rect x="0" fill="none" width="24" height="24"/>
@@ -70,12 +87,8 @@ function UserJobApplication({ application, deleteUserJobApplication,serialnumber
               </svg>
 
               <section>
-                <label>From Approver</label>
-                <textarea></textarea>
-              </section>
-              <section>
-                <label>From Approver</label>
-                <textarea></textarea>
+                <label>Comments</label>
+                <textarea value={commenttext} readOnly={true}></textarea>
               </section>
           </section>
 

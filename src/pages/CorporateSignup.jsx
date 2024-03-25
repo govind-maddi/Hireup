@@ -20,28 +20,31 @@ function CorporateSignup() {
 
     const [ checked,setChecked ] = useState('');
 
+    const [ loader,setLoader ] = useState(false);
+
     const notification = useContext(NotificationContextManager);
 
     const navigate = useNavigate();
 
     const handleCorporateSignup = async(e) => {
+      //console.log("true");
 /* ElfbF0_I3D_bv */
         e.preventDefault();
         if(checked === "admin")
         {
-        
+          setLoader(true);
           const orgref = doc(db,"Hireup_Db","Organizations");
-          const org = await getDoc(orgref);
+          const orgdocu = await getDoc(orgref);
 
           let arr = [];
-          arr = orgdocu.data().organization_id.map((item) => item);
+          arr = orgdocu.data().organizations_id.map((item) => item);
           const index = arr.findIndex((item) => item.emailid === emailid);
 
           if(index !== -1)
           {
             if( arr[index].orgid === organisation )
             {
-
+              
               createUserWithEmailAndPassword(auth,emailid,password).then(async () => {
 
                   const orgscoll = collection(orgref,`${organisation}`);
@@ -67,7 +70,6 @@ function CorporateSignup() {
 
                   const collectionref = collection(db,"Hireup_Db","Admins",`${emailid}`);
                   const detailsref = doc(collectionref,"Details");
-                  const detailsdoc = await getDoc(detailsref);
 
                   await setDoc(detailsref,{
                     "name":"",
@@ -80,34 +82,40 @@ function CorporateSignup() {
 
                   localStorage.setItem("hireup",JSON.stringify(hireup));
                   notification("Successfully Signed Up","success");
-                  setTimeout(() => navigate("/user/dashboard"),600);
-              })
+                  setLoader(false);
+                  setTimeout(() => navigate("/admin/dashboard"),600);
+              },() => notification("Signup Failed Try Again","error"));
 
             }
             else
-              notification("Incorrect Organisation Id","error");
+              {notification("Incorrect Organisation Id","error");setLoader(true);}
           }
           else
-            notification("Admin not associated with Organization","error");
+            {notification("Organisation Id Not Found","error");setLoader(true);}
           
         }
         else if(checked === "recruiter")
         {
 
+          setLoader(true);
+
           const orgref = doc(db,"Hireup_Db","Organizations");
           const orgdocu = await getDoc(orgref);
 
           let arr = [];
-          arr = orgdocu.data().organization_id.map((item) => item);
+          arr = orgdocu.data().organizations_id.map((item) => item);
+          //console.log(arr);
           const index = arr.findIndex((item) => item.orgid === organisation);
-
-          if(index !== 1)
+          console.log(index);
+          if(index !== -1)
           {
               if(!arr[index].recruiters.includes(emailid))
               {
-                createUserWithEmailAndPassword(auth,emailid,password).then(/* async () => {
+                createUserWithEmailAndPassword(auth,emailid,password).then(async () => {
                   const recruitersdbcoll = collection(db,"Hireup_Db","Organizations",`${organisation}`,"Recruiters","Recruiter_Db");
                   const recruitersdbref =  doc(recruitersdbcoll,`${emailid}`);
+
+                  arr[index].recruiters.push(`${emailid}`);
                   //const recruiterdb = await getDoc(recruitersdbref);
                   
                   await setDoc(recruitersdbref,{
@@ -121,18 +129,25 @@ function CorporateSignup() {
                     "permission":"",
                     "jobroleassigned":"",
                   });
+
+                  await updateDoc(orgref,{
+                    "organization_id":arr,
+                  })
+
                   notification("Successfully Signed Up","success");
                   const obj = {"auth":{"id":emailid,"orgid":organisation}};
                   localStorage.setItem("hireup",JSON.stringify(obj));
-                  setTimeout(() => navigate("/client/dashboard","error")); 
-                  }*/() => console.log("success"),() => notification("Signin Failed Try Again","error"));
+                  setLoader(false);
+                  setTimeout(() => navigate("/client/dashboard"));
+
+                  },() => notification("Signup Failed Try Again","error"));
               }
               else
-                notification("Recruiter already exists Login","error");
+                {notification("Recruiter already exists Login","error");setLoader(false);}
 
           }
           else
-            notification("Incorrect Orgnisation Id","error")
+            {notification("Incorrect Orgnisation Id","error");setLoader(false);}
 
         }
           else{
@@ -146,7 +161,7 @@ function CorporateSignup() {
     <Header btn1="Home" btn2="Become Recruiter" typeOfBtn="Signup" />
       <div>
       <form id='usersignup_form' onSubmit={handleCorporateSignup}>
-        <header>Corporate Signup Form</header>
+        <header>Corporate Signup</header>
         <input 
           type="email" 
           required
@@ -202,7 +217,16 @@ function CorporateSignup() {
             
         </div>
 
-        <button type="submit" id='submitbtn'>Signup</button>
+        <button type="submit" id='submitbtn' className='btnclass'>
+          {/* <label style={{display : loader ? "none" : ""}} >Signup</label> */}
+
+          {
+            loader ? 
+            <> <span className="loadersmall" style={{position:'relative',top:'-1px',marginRight:'10px'}}></span> <span>Signing. . .</span> </> :
+            "Signup"
+          }
+
+        </button>
         <button type='button' id='submitbtn' onClick={() => navigate('/organisationgenerator')}>Get Your Organisation Id</button>
       </form>
     </div>

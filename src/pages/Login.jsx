@@ -4,7 +4,11 @@ import Input from "./inputbox/Input";
 import { Link, json, useNavigate } from "react-router-dom";
 
 import './styles/login.css';
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../firebase/config";
+import { NotificationContextManager } from "../context/NotificationContext";
+import { collection,doc,getDoc } from "firebase/firestore";
 
 function Login() {
   
@@ -12,12 +16,30 @@ function Login() {
   const [ emailid,setEmailid ] = useState('');
   const [ password,setPassword ] = useState('');
 
+  const notification = useContext(NotificationContextManager);
+
   const navigate = useNavigate();
 
   const handleLogin = async(e) => {
+    e.preventDefault();
 
-    localStorage.setItem("hireup",JSON.stringify({"auth":{"id":emailid}}));
-    navigate("/user/dashboard");
+    signInWithEmailAndPassword(auth,emailid,password).then(async() => {
+      const coll =collection(db,"Hireup_Db","EndUsers","User_Db");
+      const docref = doc(coll,`${emailid}`);
+      const docu = await getDoc(docref);
+
+      if(docu.exists())
+      {
+        notification("Sign In Successfull","success");
+        localStorage.setItem("hireup",JSON.stringify({"auth":{"id":emailid}}));
+        setTimeout(() => navigate("/user/dashboard"),600);
+      }
+      else
+        notification("Email Not Present Sign Up","error");
+
+    },() => notification("Sign In Failed","error"));
+
+    
     
   }
 

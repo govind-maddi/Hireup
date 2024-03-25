@@ -4,20 +4,21 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 function useAuth() {
 
-  const [ currentuser,setCurrentUser ] = useState({});  
+  const [ currentuser,setCurrentUser ] = useState(null);  
+  const [ loader,setLoader ] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth,(user) => {
-      if(user)
-        setCurrentUser(user);
-      else
-        setCurrentUser(null);
-    });
+        
+          setCurrentUser(user);
+          setLoader(false);
+       
+     });
 
     return () => unsubscribe();
-  },[])
+  }, [])
 
-  return {currentuser};
+  return {currentuser,loader};
 }
 
 export default useAuth;

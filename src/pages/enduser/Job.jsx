@@ -45,6 +45,9 @@ function Job({job}) {
             "jobctc":job.CTC,
             "status":"PENDING",
             "resumelink":temp[0].currentversion,
+            "comments":[],
+            "img":docu1.data().img,
+            "name":docu1.data().name,
           })
         
           await updateDoc(docref1,{

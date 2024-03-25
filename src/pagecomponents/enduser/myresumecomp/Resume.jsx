@@ -8,8 +8,19 @@ import { db,storage } from '../../../firebase/config';
 import {ref,deleteObject} from 'firebase/storage'
 import { collection, doc, getDoc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
 
+import { pdfjs } from 'react-pdf';
+import { Document, Page } from 'react-pdf';
+
+
+
+
 import { NotificationContextManager } from '../../../context/NotificationContext';
 import { useNavigate } from 'react-router-dom';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 function Resume({ resume }) {
   const [message,setMessage] = useState()
@@ -105,9 +116,13 @@ function Resume({ resume }) {
     <div className="resume">
       <div className={ deleteflag && "resume_inner" }>
         
-        <img src={resumepic} alt="" className='resumeimg' style={{border : resume.selected ? "4px #0eb90e solid" : "1px black solid"}} onClick={() => downloadResume()}/><br/>
-        
-        <label>Resume 1</label><br/>
+        {/* <img src={resumepic} alt="" className='resumeimg' style={{border : resume.selected ? "4px #0eb90e solid" : "1px black solid"}} onClick={() => downloadResume()}/><br/>
+         */}
+        <Document file={resume.link}>
+          <Page pageNumber={1} width={150} height={250} canvasBackground={ resume.selected ? "white" : "grey" } onClick={() => downloadResume()}/>
+        </Document>
+
+        <label>Resume</label><br/>
         
         <svg style={{marginRight:'20px'}} onClick={handleSelected}
           fill="green" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">

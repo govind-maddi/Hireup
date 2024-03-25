@@ -8,12 +8,16 @@ import { Link, json, useNavigate } from "react-router-dom";
 import './styles/login.css';
 import { useState } from "react";
 import { NotificationContextManager } from '../context/NotificationContext';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../firebase/config';
+import { doc, getDoc } from 'firebase/firestore';
 
 function CorporateLogin() {
 
     const [ emailid,setEmailid ] = useState('');
     const [ organisation,setOrganisation ] = useState('');
   const [ password,setPassword ] = useState('');
+  const [ loader,setLoader ] = useState(false);
 
   const [ checked,setChecked ] = useState('');
 
@@ -24,93 +28,102 @@ function CorporateLogin() {
   const handleCorporateLogin = async(e) => {
 
     e.preventDefault();
-    const hireup = {"auth":{"id":emailid,"orgid":"ElfbF0_I3D_bv"}}
-    localStorage.setItem("hireup",JSON.stringify(hireup));
-    navigate("/admin/dashboard");
-    /* if(checked === "admin")
+    
+    if(checked === "admin")
     {
-      try
-      {
-          console.log(`${localStorage.getItem("baseUrl")}/auth/login`);
-          const resp = await fetch(`${localStorage.getItem("baseUrl")}/auth/login`,{
-          method:'POST',
-          headers:{
-            'Content-Type':'application/json'
-          },
-          body:JSON.stringify({"email":emailid,'password':password}),
-          });
-      
-        if(!resp.ok)
-        {
-          notification("Invalid Credentials","error");
-        }
-        else 
-        {
-          const data = await resp.json();
-          localStorage.setItem("jwttoken",data.jwt_token);
-          localStorage.setItem("adminid",data.email_id);
+      setLoader(true);
+      signInWithEmailAndPassword(auth,emailid,password).then(async() => {
 
-          notification("Successfully Logged In","success");
-        
-          setTimeout(() => navigate('/admin/dashboard'),500);
-        }
-      }
-      catch(err)
-      {
-        notification("Login Failed","error");
-        console.log(err.msg);
-      }
+          const orgref = doc(db,"Hireup_Db","Organizations");
+          const orgdocu = await getDoc(orgref);
+
+          let arr = [];
+          arr = orgdocu.data().organization_id.map((item) => item);
+          const index = arr.findIndex((item) => item.emailid === emailid);
+
+          if(index !== -1)
+          {
+            if(arr[index].orgid === organisation)
+            {
+              notification("Successfully Signed In","success");
+              const hireup = {"auth":{"id":emailid,"orgid":organisation}};
+              localStorage.setItem("hireup",JSON.stringify(hireup));
+              setTimeout(() => navigate("/admin/dashboard"),600);
+            }
+            else
+              throw new Error("Invalid Org Id");
+          }
+          else
+            throw new Error("Invalid Email Id");
+
+
+      },() => {
+        notification("Signup Failed Try Again","error");
+      }).catch((err) => notification(err.message,"error"));
+      setLoader(false);
     }
     else if(checked === "recruiter")
     {
-      try
-      {
-          const resp = await fetch("/recruiter/login",{
-            method:'POST',
-            headers:{
-              'Content-Type':'application/json'
-            },
-            body:JSON.stringify({"email":emailid,'password':password}),
-          });
+      setLoader(true);
+        signInWithEmailAndPassword(auth,emailid,password).then(async() => {
         
-          if(!resp.ok)
-        {
-          notification("Invalid Credentials","error");
-        }
-        else 
-        {
-          const data = await resp.json();
-          localStorage.setItem("jwttoken",data.jwt_token);
-          localStorage.setItem("recruiterid",data.email_id);
-          notification("Successfully Logged In","success");
+        const orgref = doc(db,"Hireup_Db","Organizations");
+        const orgdocu = await getDoc(orgref);
 
-          setTimeout(() => navigate('/client/dashboard'),500);
+        let arr = [];
+        arr = orgdocu.data().organizations_id.map((item) => item);
+        const index = arr.findIndex((item) => item.orgid === organisation);
+
+        if(index !== -1)
+        {
+          if(arr[index].recruiters.includes(emailid))
+          {
+            const hireup = {"auth":{"id":emailid,"orgid":organisation}};
+            localStorage.setItem("hireup",JSON.stringify(hireup));
+            setTimeout(() => {
+              navigate("/client/dashboard");
+              notification("Successfully Signed In","success");
+            },600);
+            
+            
+          }
+          else
+            throw new Error("Invalid Email Id","error");
         }
-      }
-      catch(err)
-      {
-        notification("Login Failed","error")
-        console.log(err.msg);
-      }
-    } */
-    /* else
-    {
-      notification("Select User","error");
-    } */
+        else
+          throw new Error("Invalid Org Id","error");
+
+      },() => {
+        notification("Signup Failed Try Again","error");
+      }).catch((err) => notification(err.message,"error"));
+      setLoader(false);
+    }
+    else
+      notification("Select A User","error");
   }
+    
 
   return (
     <>
         <Header btn1="Home" btn2="Become Recruiter" typeOfBtn="Signup" />
       <div>
       <form id='usersignup_form' onSubmit={handleCorporateLogin}>
-        <header>Corporate Login Form</header>
+        <header>Corporate Signin</header>
         <input 
           type="email" 
           required
           placeholder='Enter emailid'  
           value={emailid}
           onChange={(e) => setEmailid(e.target.value)}
+          
+          />
+
+          <input 
+          type="text" 
+          required
+          placeholder='Enter orgid'  
+          value={organisation}
+          onChange={(e) => setOrganisation(e.target.value)}
           
           />
 
@@ -150,7 +163,15 @@ function CorporateLogin() {
             
         </div>
 
-        <button type="submit" id='submitbtn'>Login</button>
+        <button type="submit" id='submitbtn' className='btnclass'>
+
+        {
+            loader ? 
+            <> <span className="loadersmall" style={{position:'relative',top:'-1px',marginRight:'10px'}}></span> <span>Signing. . .</span> </> :
+            "SignIn"
+        }
+
+        </button>
 
         
       </form>

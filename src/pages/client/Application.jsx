@@ -1,10 +1,16 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DownloadIcon from "@mui/icons-material/Download";
 import Commentbox from "./Commentbox";
+import { collection, doc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase/config";
+import { NotificationContextManager } from "../../context/NotificationContext";
 
-const Application = ({application}) => {
+const Application = ({application,jobid,jobaction}) => {
   
+  const [ loader,setLoader ] = useState(false);
+  const notification = useContext(NotificationContextManager);
+  const [ comment,setComment ] = useState(false);
 
   const getPdf = async (link) => {
         try {
@@ -21,17 +27,57 @@ const Application = ({application}) => {
         }
     };
 
-  useEffect(() => {
-    // checkPermission();
-  }, []);
+    const handleComment = () => {
+      setComment(false);
+    }
+
+  const performAction = async() => {
+
+    setLoader(true);
+
+    const coll1 = collection(db,"Hireup_Db","Jobs","Job_Db",`${jobid}`,"UsersApplied_Db");
+    const docref = doc(coll1,`${application.userid}`);
+
+    let status = "";
+
+    if(jobaction === "approver")
+    {
+      status = "APPROVED";
+      setComment(false);
+      updateDoc(docref,{
+        "status":status,
+      }).then(() => notification("Approved User Application","success"),() => notification("Approval Of User Application Failed","error"));
+  
+    }
+    else if(jobaction === "reviewer")
+    {
+      status = "REVIEWED";
+      setComment(false);
+      updateDoc(docref,{
+        "status":status,
+      }).then(() => notification("Reviewed User Application","success"),() => notification("Reviewal Of User Application Failed","error"));
+    }
+    else
+    {
+      setComment(true);
+    }
+
+    
+    setLoader(false);
+  }
+
 
 
 
   return (
     <>
       <div className="application">
+      <div className="img">
+          <img src={ application.img ? application.img : "" } alt="" srcSet="" />
+        </div>
+
         <div className="name">
-          <h3>{application.userid}</h3>
+          <h3>{application.name}</h3>
         </div>
         <div className="downloadicon">
         <DownloadIcon
@@ -44,10 +90,26 @@ const Application = ({application}) => {
           <button
             onClick={(e) => performAction(e.target.value)}
             className="permissionactionbtn">
-            Approve
+            
+            {
+              loader ? 
+              
+              <span class="actionloader"></span> : 
+                
+              jobaction === "approver" ? 
+                "Approve" :
+                jobaction === "reviewer" ? 
+                  "Review" :
+                  "Comment"
+            }
+
           </button>
         </div>
       </div>
+
+      {
+        comment && <Commentbox jobid={jobid} applicationid={application.userid} setComment={handleComment}/>
+      }
     </>
   );
 };

@@ -2,13 +2,14 @@
 import React,{ useContext, useState } from 'react'
 
 import Header from "../ParentContComponents/Header";
-import { Link} from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 
 import './styles/login.css';
 import { NotificationContextManager } from '../context/NotificationContext';
 
-import { db } from '../firebase/config';
+import { auth, db } from '../firebase/config';
 import { collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 function Signup() {
 
@@ -16,38 +17,39 @@ function Signup() {
   const [ password,setPassword ] = useState('');
 
   const notification = useContext(NotificationContextManager);
+  const navigate = useNavigate();
 
   const handleSignup = async(e) => {
 
     e.preventDefault();
-    try
-    {
-      const coll = collection(db,"Hireup_Db","EndUsers","User_Db");
-      const docref = doc(coll,`${emailid}`);
-      const docu = await getDoc(docref);
-      if(!docu.exists())
-      {
-        await setDoc(docref,{
-          "name":"",
-          "email":emailid,
-          "password":password,
-          "phoneno":0,
-          "resumes":[],
-          "jobsappliedto":[],
-        })
-
-        const hireup = {"auth":{"id":emailid}};
-        localStorage.setItem("hireup",JSON.stringify(hireup));
-
-        notification("Successfully Signed Up","success");
-      }
-      else
-        notification("Email Already Exists Login","error");
-    }
-    catch(err)
-    {
-      console.log(err);
-    }
+    
+      createUserWithEmailAndPassword(auth,emailid,password).then(async() => {
+        const coll = collection(db,"Hireup_Db","EndUsers","User_Db");
+        const docref = doc(coll,`${emailid}`);
+        const docu = await getDoc(docref);
+        if(!docu.exists())
+        {
+          await setDoc(docref,{
+            "name":"",
+            "email":emailid,
+            "password":password,
+            "phoneno":0,
+            "resumes":[],
+            "jobsappliedto":[],
+            "img":"",
+          })
+  
+          const hireup = {"auth":{"id":emailid}};
+          localStorage.setItem("hireup",JSON.stringify(hireup));
+  
+          notification("Successfully Signed Up","success");
+  
+          setTimeout(() => navigate("/user/dashboard"),600);
+        }
+        else
+          notification("Email Already Exists Login","error");
+      },() => notification("Signup Failed","error"))
+    
     
   }
 

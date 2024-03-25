@@ -53,7 +53,13 @@ a,a:visited,a:focus{
   box-shadow: 32px 0 , -32px 0 ,  64px 0;
   display: block;
 }
-
+.loginpic{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  text-align: center;
+}
 .loader::after {
   content: '';
   position: absolute;
@@ -107,7 +113,33 @@ a,a:visited,a:focus{
   }
   }
 
-
+  .actionloader {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: block;
+    margin:15px auto;
+    position: relative;
+    background: #FFF;
+    box-shadow: -24px 0 #FFF, 24px 0 #FFF;
+    box-sizing: border-box;
+    animation: shadowPulse 2s linear infinite;
+  }
+  
+  @keyframes shadowPulse {
+    33% {
+      background: #FFF;
+      box-shadow: -24px 0 #FF3D00, 24px 0 #FFF;
+    }
+    66% {
+      background: #FF3D00;
+      box-shadow: -24px 0 #FFF, 24px 0 #FFF;
+    }
+    100% {
+      background: #FFF;
+      box-shadow: -24px 0 #FFF, 24px 0 #FF3D00;
+    }
+  }
 .loadersmall {
   width: 20px;
   height: 20px;
@@ -140,6 +172,35 @@ a,a:visited,a:focus{
     font-weight: 600;
     color: #023436;
   }
+  
+
+.loaderbtn {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: block;
+  margin:15px auto;
+  position: relative;
+  background: #FFF;
+  box-shadow: -24px 0 #FFF, 24px 0 #FFF;
+  box-sizing: border-box;
+  animation: shadowPulse 2s linear infinite;
+}
+
+@keyframes shadowPulse {
+  33% {
+    background: #FFF;
+    box-shadow: -24px 0 #00BFB3, 24px 0 #FFF;
+  }
+  66% {
+    background: #00BFB3;
+    box-shadow: -24px 0 #FFF, 24px 0 #FFF;
+  }
+  100% {
+    background: #FFF;
+    box-shadow: -24px 0 #FFF, 24px 0 #00BFB3;
+  }
+}
 
   @media screen and ( max-width:768px ) {
     .error_illustrations > img{
@@ -154,4 +215,35 @@ a,a:visited,a:focus{
       height: 200px;
     }
   }
+  .pageloader {
+    position: absolute;
+    width:  48px;
+    height: 48px;
+    background: #00BFB3;
+    transform: rotateX(65deg) rotate(45deg) translate(-50%,-50%); 
+    color: #023436;
+    animation: layers1 1s linear infinite alternate;
+    display: block;
+    top: 50%;
+    left: 50%;
+    
+  }
+  .pageloader:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #023436;
+    opacity: 0.7;
+    animation: layerTr 1s linear infinite alternate;
+  }
+
+  @keyframes layers1 {
+    0% { box-shadow: 0px 0px 0 0px  }
+   90% , 100% { box-shadow: 20px 20px 0 -4px  }
+  }
+  @keyframes layerTr {
+    0% { transform:  translate(0, 0) scale(1) }
+    100% {  transform: translate(-25px, -25px) scale(1) }
+  }
+      
  
